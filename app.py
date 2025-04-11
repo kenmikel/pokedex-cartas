@@ -85,7 +85,13 @@ def pokedex():
         with conn.cursor() as cur:
             # Obtener cartas reales del usuario (sin duplicados)
             cur.execute("""
-                SELECT cards.code, cards.nombre, cards.url_imagen, cards.rareza, cards.tipo, cards.canje, cards.leyenda
+                SELECT cards.code,
+                       cards.descripcion AS nombre,
+                       cards.url_imagen,
+                       cards.tier AS rareza,
+                       cards.tipo,
+                       cards.is_event AS canje,
+                       cards.descripcion AS leyenda
                 FROM user_cards
                 JOIN cards ON cards.id = user_cards.card_id
                 WHERE twitch_user = %s AND cards.code != 'fragmento'
