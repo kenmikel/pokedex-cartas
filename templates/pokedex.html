@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pokédex de Cartas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+  <div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">Pokédex de Cartas</h1>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      {% for carta in cartas %}
+        <div class="bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform">
+          <img src="{{ carta.url_imagen }}" alt="{{ carta.nombre }}" class="w-full h-auto rounded mb-2">
+          <h2 class="text-lg font-semibold">{{ carta.nombre }}</h2>
+          <p class="text-sm text-gray-400">Tipo: {{ carta.tipo }}</p>
+          {% if carta.canje %}
+            <p class="text-sm text-yellow-400">¡Canje especial!</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>
