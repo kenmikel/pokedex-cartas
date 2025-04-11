@@ -35,14 +35,21 @@
   <!-- GALERIA DE CARTAS -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
     {% for carta in cartas %}
+    {% if carta.url_imagen %}
     <div class="relative bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform cursor-pointer"
-         onclick='mostrarLeyenda("{{ carta.nombre | e }}", "{{ carta.leyenda | default("", true) | e }}")'>
-      <img src="{{ carta.url_imagen }}" alt="{{ carta.nombre | e }}" class="w-full h-auto rounded mb-2">
+         onclick="mostrarLeyenda('{{ carta.descripcion | e }}', '{{ carta.leyenda | default('', true) | e }}')">
+      <img src="{{ carta.url_imagen }}" alt="{{ carta.descripcion | e }}" class="w-full h-auto rounded mb-2">
       <div class="text-center">
-        <h2 class="text-base font-semibold">{{ carta.nombre }}</h2>
-        <p class="text-sm text-gray-400">{{ carta.rareza|capitalize }}</p>
+        <h2 class="text-base font-semibold">{{ carta.descripcion }}</h2>
+        <p class="text-xs px-2 py-1 rounded-full inline-block
+                   {% if carta.rareza == 'épica' %}bg-purple-600
+                   {% elif carta.rareza == 'rara' %}bg-blue-600
+                   {% else %}bg-gray-600{% endif %}">
+          {{ carta.rareza | capitalize }}
+        </p>
       </div>
     </div>
+    {% endif %}
     {% endfor %}
   </div>
 
@@ -68,7 +75,7 @@
     }
 
     function autocompletar() {
-      // en el futuro podrías usar JS para filtrar en vivo
+      // Futuro: filtro en vivo con JS
     }
 
     function cambiarTemporada(id) {
