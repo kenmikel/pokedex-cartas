@@ -1,24 +1,79 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pokédex de Cartas</title>
+  <title>Pawkedex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .tab-activa {
+      filter: brightness(1.1);
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white">
-  <div class="container mx-auto p-4">
-    <h1 class="text-3xl font-bold mb-6">Pokédex de Cartas</h1>
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      {% for carta in cartas %}
-        <div class="bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform">
-          <img src="{{ carta.url_imagen }}" alt="{{ carta.nombre }}" class="w-full h-auto rounded mb-2">
-          <h2 class="text-lg font-semibold">{{ carta.nombre }}</h2>
-          <p class="text-sm text-gray-400">Tipo: {{ carta.tipo }}</p>
-          {% if carta.canje %}
-            <p class="text-sm text-yellow-400">¡Canje especial!</p>
-          {% endif %}
-        </div>
-      {% endfor %}
+<body class="bg-gray-900 text-white font-sans">
+  <!-- ENCABEZADO -->
+  <div class="p-4 flex items-center justify-between bg-gray-800 shadow-md">
+    <div class="flex items-center space-x-4">
+      <img src="{{ user_avatar_url }}" alt="Avatar" class="w-12 h-12 rounded-full border border-white">
+      <div>
+        <h1 class="text-xl font-bold">{{ usuario }}</h1>
+        <p class="text-sm text-green-400">{{ sub_status }}{% if sub_level %} ({{ sub_level }}){% endif %}</p>
+        <p class="text-xs text-yellow-400">{{ logro_activo }}</p>
+      </div>
+    </div>
+    <div class="text-right">
+      <p class="text-sm">{{ total_cartas }} CARTAS</p>
+      <p class="text-sm">{{ fragmentos }} FRAGMENTOS</p>
     </div>
   </div>
+
+  <!-- BUSCADOR -->
+  <div class="p-4">
+    <input id="buscador" type="text" placeholder="Buscar carta por número..." class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white" oninput="autocompletar()">
+  </div>
+
+  <!-- GALERIA DE CARTAS -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
+    {% for carta in cartas %}
+    <div class="relative bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform cursor-pointer"
+         onclick='mostrarLeyenda("{{ carta.nombre | e }}", "{{ carta.leyenda | default("", true) | e }}")'>
+      <img src="{{ carta.url_imagen }}" alt="{{ carta.nombre | e }}" class="w-full h-auto rounded mb-2">
+      <div class="text-center">
+        <h2 class="text-base font-semibold">{{ carta.nombre }}</h2>
+        <p class="text-sm text-gray-400">{{ carta.rareza|capitalize }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- LEYENDA -->
+  <div id="leyendaGlobo" class="fixed bottom-10 left-1/2 transform -translate-x-1/2 bg-gray-700 text-white p-4 rounded-xl shadow-xl hidden">
+    <p id="leyendaTexto"></p>
+  </div>
+
+  <!-- TEMPORADAS -->
+  <div class="fixed bottom-0 left-0 right-0 bg-gray-800 p-3 flex justify-center space-x-6 border-t border-gray-700">
+    <button onclick="cambiarTemporada('1')" class="tab-activa"><img src="/static/icono_corazon.png" class="w-8"></button>
+    <button onclick="cambiarTemporada('2')"><img src="/static/icono_fuego.png" class="w-8"></button>
+    <button onclick="cambiarTemporada('evento')"><img src="/static/icono_botella.png" class="w-8 grayscale"></button>
+  </div>
+
+  <script>
+    function mostrarLeyenda(nombre, leyenda) {
+      const globo = document.getElementById('leyendaGlobo');
+      const texto = document.getElementById('leyendaTexto');
+      texto.innerText = leyenda ? `${nombre}: ${leyenda}` : `${nombre}`;
+      globo.classList.remove('hidden');
+      setTimeout(() => globo.classList.add('hidden'), 4000);
+    }
+
+    function autocompletar() {
+      // en el futuro podrías usar JS para filtrar en vivo
+    }
+
+    function cambiarTemporada(id) {
+      alert("(Placeholder) Cambiar a temporada: " + id);
+    }
+  </script>
 </body>
 </html>
