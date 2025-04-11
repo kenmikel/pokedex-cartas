@@ -10,16 +10,31 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 def get_db():
     return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
-# Página de entrada
+# Página de entrada con validación real
 @app.route("/", methods=["GET", "POST"])
 def entrada():
+    error = None
+
     if request.method == "POST":
-        nombre = request.form.get("nombre", "").lower().strip()
-        if nombre == "mikel":
+        nombre = request.form.get("nombre", "").strip().lower()
+
+        with get_db() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT 1
+                    FROM user_cards
+                    JOIN cards ON cards.id = user_cards.card_id
+                    WHERE twitch_user = %s
+                    LIMIT 1
+                """, (nombre,))
+                tiene_cartas = cur.fetchone()
+
+        if tiene_cartas:
             return redirect(url_for("pokedex"))
         else:
-            return render_template("entrada.html", error="Nombre incorrecto. Intenta de nuevo.")
-    return render_template("entrada.html")
+            error = "No tienes cartas. No hay nada que mirar por aquí."
+
+    return render_template("entrada.html", error=error)
 
 # Página Pokédex
 @app.route("/pokedex")
