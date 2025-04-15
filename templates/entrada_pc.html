@@ -13,13 +13,17 @@
       background-position: center;
       background-repeat: no-repeat;
     }
+    input:focus {
+      background-color: rgba(202, 138, 4, 0.8); /* mantiene el mismo tono que el inicial */
+      outline: none;
+    }
   </style>
 </head>
 <body class="min-h-screen flex items-center justify-center">
   <div class="relative w-full max-w-sm aspect-[3/5] flex flex-col items-center justify-center px-6 py-6 overflow-hidden">
 
     <!-- Carta de fondo -->
-    <div class="absolute inset-0 bg-center bg-no-repeat bg-cover z-0"
+    <div class="absolute inset-0 bg-center bg-no-repeat bg-cover z-0 backdrop-blur-sm"
          style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}');">
     </div>
 
