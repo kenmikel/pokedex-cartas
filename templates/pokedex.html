@@ -37,15 +37,16 @@
     {% for carta in cartas %}
     {% if carta.url_imagen %}
     <div class="relative bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform cursor-pointer"
-         onclick="mostrarLeyenda('{{ carta.descripcion | e }}', '{{ carta.leyenda | default('', true) | e }}')">
+         onclick="mostrarLeyenda('{{ carta.descripcion | e }}', '')">
       <img src="{{ carta.url_imagen }}" alt="{{ carta.descripcion | e }}" class="w-full h-auto rounded mb-2">
       <div class="text-center">
         <h2 class="text-base font-semibold">{{ carta.descripcion }}</h2>
         <p class="text-xs px-2 py-1 rounded-full inline-block
-                   {% if carta.rareza == 'épica' %}bg-purple-600
-                   {% elif carta.rareza == 'rara' %}bg-blue-600
+                   {% if carta.tier == 'S+' %}bg-purple-600
+                   {% elif carta.tier == 'S' or carta.tier == 'A' %}bg-blue-600
+                   {% elif carta.tier == 'B' %}bg-green-600
                    {% else %}bg-gray-600{% endif %}">
-          {{ carta.rareza | capitalize }}
+          {{ carta.tier }}
         </p>
       </div>
     </div>

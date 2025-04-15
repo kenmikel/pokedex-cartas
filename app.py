@@ -86,11 +86,9 @@ def pokedex():
             # Obtener cartas reales del usuario (sin duplicados)
             cur.execute("""
                 SELECT cards.code,
-                       cards.descripcion AS nombre,
+                       cards.descripcion,
+                       cards.tier,
                        cards.url_imagen,
-                       cards.tier AS rareza,
-                       cards.tipo,
-                       cards.is_event AS canje,
                        cards.descripcion AS leyenda
                 FROM user_cards
                 JOIN cards ON cards.id = user_cards.card_id
