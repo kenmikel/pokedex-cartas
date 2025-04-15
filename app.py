@@ -3,6 +3,7 @@ import psycopg2
 import psycopg2.extras
 import os
 import requests
+import re
 
 app = Flask(__name__)
 
@@ -21,7 +22,6 @@ def obtener_datos_twitch(nombre_usuario):
         "Authorization": f"Bearer {TWITCH_TOKEN}"
     }
 
-    # Obtener datos del usuario
     r_user = requests.get(f"https://api.twitch.tv/helix/users?login={nombre_usuario}", headers=headers)
     datos_user = r_user.json().get("data", [])
     if not datos_user:
@@ -31,7 +31,6 @@ def obtener_datos_twitch(nombre_usuario):
     user_id = twitch_user["id"]
     avatar_url = twitch_user["profile_image_url"]
 
-    # Verificar si está suscrito al canal de La Paw
     r_sub = requests.get(
         f"https://api.twitch.tv/helix/subscriptions/user?broadcaster_id={TWITCH_BROADCASTER_ID}&user_id={user_id}",
         headers=headers
@@ -44,11 +43,11 @@ def obtener_datos_twitch(nombre_usuario):
         sub_status = "No sub"
         sub_level = None
 
-    logro_activo = ""  # Acá podrías consultar en tu base si lo tenés guardado
+    logro_activo = ""  # Podés consultar en tu base si tenés uno activo
 
     return avatar_url, sub_status, sub_level, logro_activo
 
-# Página de entrada con validación real
+# Página de entrada con selección automática móvil o PC
 @app.route("/", methods=["GET", "POST"])
 def entrada():
     error = None
@@ -72,7 +71,13 @@ def entrada():
         else:
             error = "No tienes cartas. No hay nada que mirar por aquí."
 
-    return render_template("entrada.html", error=error)
+    user_agent = request.headers.get("User-Agent", "").lower()
+    es_movil = re.search("iphone|android|mobile|ipad|ipod|blackberry|phone", user_agent)
+
+    if es_movil:
+        return render_template("entrada_movil.html", error=error)
+    else:
+        return render_template("entrada_pc.html", error=error)
 
 # Página Pokédex visual
 @app.route("/pokedex")
@@ -83,7 +88,6 @@ def pokedex():
 
     with get_db() as conn:
         with conn.cursor() as cur:
-            # Obtener cartas reales del usuario (sin duplicados)
             cur.execute("""
                 SELECT cards.code,
                        cards.descripcion,
@@ -96,7 +100,6 @@ def pokedex():
             """, (usuario,))
             cartas_raw = cur.fetchall()
 
-            # Eliminar duplicados y contar
             vistos = set()
             cartas_final = []
             for carta in cartas_raw:
@@ -106,7 +109,6 @@ def pokedex():
 
             total_cartas = len(cartas_final)
 
-            # Fragmentos
             cur.execute("""
                 SELECT COUNT(*) FROM user_cards
                 JOIN cards ON cards.id = user_cards.card_id
@@ -114,7 +116,6 @@ def pokedex():
             """, (usuario,))
             fragmentos = cur.fetchone()["count"]
 
-    # Obtener datos reales de Twitch
     avatar_url, sub_status, sub_level, logro_activo = obtener_datos_twitch(usuario)
 
     return render_template("pokedex.html",
