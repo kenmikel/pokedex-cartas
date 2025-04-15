@@ -13,38 +13,51 @@
       animation: sway 2.5s infinite ease-in-out;
       transform-origin: top;
     }
+
+    @media (max-width: 767px) {
+      .pc-only { display: none; }
+      .mobile-only { display: flex; }
+    }
+
+    @media (min-width: 768px) {
+      .pc-only { display: flex; }
+      .mobile-only { display: none; }
+    }
   </style>
 </head>
 <body class="bg-black">
 
-  <div class="relative min-h-screen flex items-center justify-center bg-black overflow-hidden">
+  <!-- 🌐 VISTA EN PC -->
+  <div class="pc-only relative min-h-screen items-center justify-center bg-black overflow-hidden">
 
-    <!-- FONDO DEL TECLADO -->
+    <!-- Fondo del teclado -->
     <img src="{{ url_for('static', filename='img/teclado fondo.png') }}"
-         class="absolute inset-0 w-full h-full object-contain z-0" alt="Fondo Teclado">
+         class="absolute inset-0 w-full h-full object-cover z-0" alt="Fondo Teclado">
 
-    <!-- CONTENEDOR DEL TELÉFONO -->
-    <div class="relative z-10 w-[360px] aspect-[9/16]">
-      <!-- MARCO DEL TELÉFONO -->
+    <!-- Celular en el centro -->
+    <div class="relative z-10 w-[360px] aspect-[9/16] mx-auto">
+      <!-- Marco del teléfono -->
       <img src="{{ url_for('static', filename='img/telefono fondo.png') }}"
            class="absolute inset-0 w-full h-full z-20 pointer-events-none" alt="Marco teléfono">
 
-      <!-- CONTENIDO DENTRO DEL TELÉFONO -->
+      <!-- Contenido interno del celular -->
       <div class="absolute inset-[6%] z-10 rounded-2xl overflow-hidden flex flex-col items-center justify-center px-6 py-6 bg-black/80 backdrop-blur-md">
 
-        <!-- FONDO DE LA CARTA BLOQUEADA -->
-        <img src="{{ url_for('static', filename='img/carta cadena fondo.png') }}"
-             class="absolute inset-0 w-full h-full object-contain blur-[2px] opacity-60" alt="Fondo carta">
+        <!-- Carta desenfocada -->
+        <div class="absolute inset-0 z-0">
+          <img src="{{ url_for('static', filename='img/carta cadena fondo.png') }}"
+               class="w-full h-full object-contain blur-[2px] opacity-60" alt="Carta fondo">
+        </div>
 
-        <!-- FORMULARIO -->
+        <!-- Formulario -->
         <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
-          <!-- CADENAS -->
+          <!-- Cadenas -->
           <img src="{{ url_for('static', filename='img/cadena fondo.png') }}"
                class="absolute left-2 top-0 w-10 animate-chain-sway" alt="Cadena izquierda">
           <img src="{{ url_for('static', filename='img/cadena fondo.png') }}"
                class="absolute right-2 top-0 w-10 rotate-180 animate-chain-sway" alt="Cadena derecha">
 
-          <!-- INPUT -->
+          <!-- Input -->
           <input type="text" name="nombre" placeholder="Ingresa tu nombre"
                  class="w-full text-center text-xl bg-yellow-900/80 text-white rounded-lg py-3 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
                  required>
@@ -59,7 +72,33 @@
         {% endif %}
       </div>
     </div>
+  </div>
+
+  <!-- 📱 VISTA EN CELULAR -->
+  <div class="mobile-only min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-black via-gray-900 to-black">
+
+    <div class="relative w-full max-w-sm bg-black/90 rounded-xl shadow-xl p-6 border border-yellow-600">
+
+      <!-- Carta fondo -->
+      <img src="{{ url_for('static', filename='img/carta cadena fondo.png') }}"
+           class="absolute inset-0 w-full h-full object-contain blur-[2px] opacity-60 z-0" alt="Fondo carta">
+
+      <form method="POST" class="relative z-10 w-full flex flex-col gap-4">
+        <input type="text" name="nombre" placeholder="Ingresa tu nombre"
+               class="w-full text-center text-xl bg-yellow-900/80 text-white rounded-lg py-3 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
+               required>
+        <button type="submit"
+                class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded font-bold shadow-lg">
+          Entrar
+        </button>
+      </form>
+
+      {% if error %}
+        <p class="text-red-400 mt-4 z-10 text-center">{{ error }}</p>
+      {% endif %}
+    </div>
 
   </div>
+
 </body>
 </html>
