@@ -34,17 +34,16 @@
     <img src="{{ url_for('static', filename='img/teclado fondo.png') }}"
          class="absolute inset-0 w-full h-full object-cover z-0" alt="Fondo Teclado">
 
-    <!-- Celular en el centro -->
+    <!-- Celular visual (imagen completa como marco) -->
     <div class="relative z-10 w-[360px] aspect-[9/16] mx-auto">
-      <!-- Marco del teléfono -->
       <img src="{{ url_for('static', filename='img/telefono fondo.png') }}"
            class="absolute inset-0 w-full h-full z-20 pointer-events-none" alt="Marco teléfono">
 
-      <!-- Contenido interno con fondo-carta como background -->
-      <div class="absolute inset-[6%] z-10 rounded-2xl overflow-hidden flex flex-col items-center justify-center px-6 py-6 bg-black/80 backdrop-blur-md"
+      <!-- PANTALLA REAL DENTRO DEL CELULAR -->
+      <div class="absolute top-[9%] left-[7%] w-[86%] h-[82%] z-10 rounded-2xl overflow-hidden flex flex-col items-center justify-center px-6 py-6 bg-black/80 backdrop-blur-md"
            style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}'); background-size: contain; background-position: center; background-repeat: no-repeat;">
 
-        <!-- Formulario -->
+        <!-- FORMULARIO -->
         <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
           <!-- Cadenas -->
           <img src="{{ url_for('static', filename='img/cadena fondo.png') }}"
@@ -69,7 +68,7 @@
     </div>
   </div>
 
-  <!-- 📱 VISTA EN CELULAR -->
+  <!-- 📱 VISTA EN CELULAR (NO TOCADA) -->
   <div class="mobile-only min-h-screen items-center justify-center px-6 bg-black"
        style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}'); background-size: cover; background-position: center;">
 
@@ -89,7 +88,6 @@
         <p class="text-red-400 mt-4 z-10 text-center">{{ error }}</p>
       {% endif %}
     </div>
-
   </div>
 
 </body>
