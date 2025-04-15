@@ -89,10 +89,20 @@ def pokedex():
     with get_db() as conn:
         with conn.cursor() as cur:
             cur.execute("""
-                SELECT cards.code,
-                       cards.descripcion,
-                       cards.tier,
+                SELECT cards.id,
+                       cards.code,
+                       cards.edition,
+                       cards.tipo,
                        cards.url_imagen,
+                       cards.descripcion,
+                       cards.habilidad,
+                       cards.evento_especial,
+                       cards.version_especial,
+                       cards.primera_vez,
+                       cards.tier,
+                       cards.nombre,
+                       cards.temporada,
+                       cards.sammi_boost_id,
                        cards.descripcion AS leyenda
                 FROM user_cards
                 JOIN cards ON cards.id = user_cards.card_id
