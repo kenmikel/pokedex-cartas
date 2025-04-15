@@ -17,6 +17,13 @@
 </head>
 <body class="min-h-screen flex items-center justify-center">
   <div class="relative w-full max-w-sm aspect-[3/5] flex flex-col items-center justify-center px-6 py-6 overflow-hidden">
+
+    <!-- Carta de fondo -->
+    <div class="absolute inset-0 bg-center bg-no-repeat bg-cover z-0"
+         style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}');">
+    </div>
+
+    <!-- Formulario -->
     <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
       <input type="text" name="nombre" placeholder="Ingresa tu nombre"
              class="w-10/12 max-w-[220px] text-center text-lg bg-yellow-900/80 text-white rounded-lg py-2 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
