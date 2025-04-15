@@ -13,7 +13,6 @@
       background-position: center;
       background-repeat: no-repeat;
     }
-
     input:focus {
       background-color: rgba(202, 138, 4, 0.8);
       outline: none;
@@ -23,15 +22,15 @@
 <body class="min-h-screen flex items-center justify-center">
   <div class="relative w-full max-w-sm aspect-[3/5] flex flex-col items-center justify-center px-6 py-6 overflow-hidden">
 
-    <!-- Carta de fondo desenfocada ligeramente -->
-    <img src="{{ url_for('static', filename='img/carta cadena fondo.png') }}"
-         class="absolute inset-0 w-full h-full object-contain z-0 opacity-90 blur-sm pointer-events-none"
-         alt="Carta fondo desenfocada" />
+    <!-- Carta de fondo con blur leve y sin transparencia -->
+    <div class="absolute inset-0 bg-center bg-no-repeat bg-cover z-0" 
+         style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}'); filter: blur(2px);">
+    </div>
 
     <!-- Formulario -->
     <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
       <input type="text" name="nombre" placeholder="Ingresa tu nombre"
-             class="w-10/12 max-w-[220px] text-center text-lg bg-yellow-900/80 text-white rounded-lg py-2 px-4 border-2 border-yellow-500 shadow-lg font-semibold tracking-wide"
+             class="w-10/12 max-w-[220px] text-center text-lg bg-yellow-900/80 text-white rounded-lg py-2 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
              required>
       <button type="submit"
               class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded font-bold shadow-lg">
