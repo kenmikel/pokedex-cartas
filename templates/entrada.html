@@ -22,6 +22,21 @@
 
     @media screen and (orientation: landscape) {
       body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: black;
+      }
+
+      body::before {
+        content: "Gira tu dispositivo para ver la Pokédex";
+        color: white;
+        font-size: 1.2rem;
+        text-align: center;
+        padding: 2rem;
+      }
+
+      .bloqueo-orientacion {
         display: none;
       }
     }
@@ -29,9 +44,8 @@
 </head>
 <body class="min-h-screen flex items-center justify-center">
 
-  <!-- Contenedor principal sin bordes ni fondo -->
-  <div class="relative w-full max-w-sm aspect-[3/5] flex flex-col items-center justify-center px-6 py-6 overflow-hidden"
-       style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}'); background-size: contain; background-position: center; background-repeat: no-repeat;">
+  <!-- Contenedor único sin fondo adicional -->
+  <div class="bloqueo-orientacion relative w-full max-w-sm aspect-[3/5] flex flex-col items-center justify-center px-6 py-6 overflow-hidden">
 
     <!-- Formulario -->
     <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
@@ -41,3 +55,14 @@
       <button type="submit"
               class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded font-bold shadow-lg">
         Entrar
+      </button>
+    </form>
+
+    {% if error %}
+      <p class="text-red-400 mt-4 z-10 text-center">{{ error }}</p>
+    {% endif %}
+
+  </div>
+
+</body>
+</html>
