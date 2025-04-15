@@ -103,19 +103,17 @@ def pokedex():
                        cards.nombre,
                        cards.temporada,
                        cards.sammi_boost_id,
-                       cards.descripcion AS leyenda
+                       cards.descripcion AS leyenda,
+                       COUNT(*) as cantidad
                 FROM user_cards
                 JOIN cards ON cards.id = user_cards.card_id
                 WHERE twitch_user = %s AND cards.code != 'fragmento'
+                GROUP BY cards.id, cards.code, cards.edition, cards.tipo, cards.url_imagen,
+                         cards.descripcion, cards.habilidad, cards.evento_especial,
+                         cards.version_especial, cards.primera_vez, cards.tier,
+                         cards.nombre, cards.temporada, cards.sammi_boost_id
             """, (usuario,))
-            cartas_raw = cur.fetchall()
-
-            vistos = set()
-            cartas_final = []
-            for carta in cartas_raw:
-                if carta["code"] not in vistos:
-                    vistos.add(carta["code"])
-                    cartas_final.append(carta)
+            cartas_final = cur.fetchall()
 
             total_cartas = len(cartas_final)
 
