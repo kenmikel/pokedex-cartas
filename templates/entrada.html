@@ -21,20 +21,20 @@
 
     <!-- FONDO DEL TECLADO -->
     <img src="{{ url_for('static', filename='img/teclado fondo.png') }}"
-         class="absolute inset-0 w-full h-full object-cover z-0" alt="Fondo Teclado">
+         class="absolute inset-0 w-full h-full object-contain z-0" alt="Fondo Teclado">
 
     <!-- CONTENEDOR DEL TELÉFONO -->
-    <div class="relative z-10 w-[400px] aspect-[9/19]">
+    <div class="relative z-10 w-[360px] aspect-[9/16]">
       <!-- MARCO DEL TELÉFONO -->
       <img src="{{ url_for('static', filename='img/telefono fondo.png') }}"
            class="absolute inset-0 w-full h-full z-20 pointer-events-none" alt="Marco teléfono">
 
       <!-- CONTENIDO DENTRO DEL TELÉFONO -->
-      <div class="absolute inset-[7%] z-10 rounded-2xl overflow-hidden flex flex-col items-center justify-center px-6 py-8 bg-black/80 backdrop-blur-md">
+      <div class="absolute inset-[6%] z-10 rounded-2xl overflow-hidden flex flex-col items-center justify-center px-6 py-6 bg-black/80 backdrop-blur-md">
 
         <!-- FONDO DE LA CARTA BLOQUEADA -->
         <img src="{{ url_for('static', filename='img/carta cadena fondo.png') }}"
-             class="absolute inset-0 w-full h-full object-cover blur-sm opacity-70" alt="Fondo carta">
+             class="absolute inset-0 w-full h-full object-contain blur-[2px] opacity-60" alt="Fondo carta">
 
         <!-- FORMULARIO -->
         <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
