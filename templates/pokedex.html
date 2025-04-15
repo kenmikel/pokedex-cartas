@@ -38,16 +38,16 @@
     {% if carta.url_imagen %}
     <div class="relative bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform cursor-pointer"
          onclick="mostrarLeyenda('{{ carta.descripcion | e }}', '')">
+      <!-- Código de la carta en círculo superior -->
+      <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-300 text-black text-sm font-bold px-3 py-1 rounded-full shadow z-10">
+        {{ carta.code }}
+      </div>
       <img src="{{ carta.url_imagen }}" alt="{{ carta.descripcion | e }}" class="w-full h-auto rounded mb-2">
-      <div class="text-center">
-        <h2 class="text-base font-semibold">{{ carta.descripcion }}</h2>
-        <p class="text-xs px-2 py-1 rounded-full inline-block
-                   {% if carta.tier == 'S+' %}bg-purple-600
-                   {% elif carta.tier == 'S' or carta.tier == 'A' %}bg-blue-600
-                   {% elif carta.tier == 'B' %}bg-green-600
-                   {% else %}bg-gray-600{% endif %}">
-          {{ carta.tier }}
-        </p>
+
+      <!-- Globo con tipo de carta -->
+      <div class="relative bg-yellow-100 text-black text-sm font-semibold px-4 py-2 rounded-xl border-2 border-yellow-400 shadow z-10 text-center">
+        {{ carta.tipo }}
+        <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-yellow-100 border-l-2 border-t-2 border-yellow-400 rotate-45 z-0"></div>
       </div>
     </div>
     {% endif %}
