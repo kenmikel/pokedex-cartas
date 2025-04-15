@@ -5,87 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @keyframes sway {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(4deg); }
-    }
-    .animate-chain-sway {
-      animation: sway 2.5s infinite ease-in-out;
-      transform-origin: top;
+    body {
+      background-color: black;
+      background-image: url('{{ url_for('static', filename='img/teclado fondo.png') }}');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     @media (max-width: 767px) {
-      .pc-only { display: none; }
-      .mobile-only { display: flex; }
-    }
-
-    @media (min-width: 768px) {
-      .pc-only { display: flex; }
-      .mobile-only { display: none; }
+      body {
+        background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}');
+      }
     }
   </style>
 </head>
-<body class="bg-black">
+<body class="min-h-screen flex items-center justify-center">
 
-  <!-- 🌐 VISTA EN PC -->
-  <div class="pc-only relative min-h-screen items-center justify-center bg-black overflow-hidden">
+  <div class="relative w-full max-w-sm aspect-[3/5] flex flex-col items-center justify-center px-6 py-6 bg-black rounded-2xl shadow-xl border-2 border-yellow-700 overflow-hidden"
+       style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}'); background-size: contain; background-position: center; background-repeat: no-repeat;">
 
-    <!-- Fondo del teclado -->
-    <img src="{{ url_for('static', filename='img/teclado fondo.png') }}"
-         class="absolute inset-0 w-full h-full object-cover z-0" alt="Fondo Teclado">
+    <!-- Formulario -->
+    <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
+      <input type="text" name="nombre" placeholder="Ingresa tu nombre"
+             class="w-full text-center text-xl bg-yellow-900/80 text-white rounded-lg py-3 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
+             required>
+      <button type="submit"
+              class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded font-bold shadow-lg">
+        Entrar
+      </button>
+    </form>
 
-    <!-- Celular ensanchado -->
-    <div class="relative z-10 w-[420px] aspect-[9/16] mx-auto">
-      <img src="{{ url_for('static', filename='img/telefono fondo.png') }}"
-           class="absolute inset-0 w-full h-full z-20 pointer-events-none" alt="Marco teléfono">
-
-      <!-- Pantalla real ajustada dentro del marco -->
-      <div class="absolute top-[9%] left-[11%] w-[78%] h-[82%] z-10 rounded-2xl overflow-hidden flex flex-col items-center justify-center px-6 py-6 bg-black/80 backdrop-blur-md"
-           style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}'); background-size: contain; background-position: center; background-repeat: no-repeat;">
-
-        <!-- Formulario -->
-        <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
-          <img src="{{ url_for('static', filename='img/cadena fondo.png') }}"
-               class="absolute left-2 top-0 w-10 animate-chain-sway" alt="Cadena izquierda">
-          <img src="{{ url_for('static', filename='img/cadena fondo.png') }}"
-               class="absolute right-2 top-0 w-10 rotate-180 animate-chain-sway" alt="Cadena derecha">
-
-          <input type="text" name="nombre" placeholder="Ingresa tu nombre"
-                 class="w-full text-center text-xl bg-yellow-900/80 text-white rounded-lg py-3 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
-                 required>
-          <button type="submit"
-                  class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded font-bold shadow-lg">
-            Entrar
-          </button>
-        </form>
-
-        {% if error %}
-          <p class="text-red-400 mt-4 z-10">{{ error }}</p>
-        {% endif %}
-      </div>
-    </div>
-  </div>
-
-  <!-- 📱 VISTA EN CELULAR (SIN CAMBIOS) -->
-  <div class="mobile-only min-h-screen items-center justify-center px-6 bg-black"
-       style="background-image: url('{{ url_for('static', filename='img/carta cadena fondo.png') }}'); background-size: cover; background-position: center;">
-
-    <div class="relative w-full max-w-sm bg-black/80 rounded-xl shadow-xl p-6 border border-yellow-600 backdrop-blur">
-
-      <form method="POST" class="relative z-10 w-full flex flex-col gap-4">
-        <input type="text" name="nombre" placeholder="Ingresa tu nombre"
-               class="w-full text-center text-xl bg-yellow-900/80 text-white rounded-lg py-3 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
-               required>
-        <button type="submit"
-                class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded font-bold shadow-lg">
-          Entrar
-        </button>
-      </form>
-
-      {% if error %}
-        <p class="text-red-400 mt-4 z-10 text-center">{{ error }}</p>
-      {% endif %}
-    </div>
+    {% if error %}
+      <p class="text-red-400 mt-4 z-10 text-center">{{ error }}</p>
+    {% endif %}
   </div>
 
 </body>
