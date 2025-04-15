@@ -2,18 +2,64 @@
 <html>
 <head>
   <title>Entrar a la Pokédex</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes sway {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(4deg); }
+    }
+    .animate-chain-sway {
+      animation: sway 2.5s infinite ease-in-out;
+      transform-origin: top;
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-  <div class="bg-gray-800 p-8 rounded-xl shadow-lg text-center max-w-sm w-full">
-    <h1 class="text-2xl font-bold mb-4">Bienvenido a la Pokédex</h1>
-    <form method="POST">
-      <input type="text" name="nombre" placeholder="Tu nombre..." class="w-full p-2 rounded mb-4 text-black" required>
-      <button type="submit" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded font-semibold">Entrar</button>
-    </form>
-    {% if error %}
-      <p class="text-red-400 mt-4">{{ error }}</p>
-    {% endif %}
+<body class="bg-black">
+
+  <div class="relative min-h-screen flex items-center justify-center bg-black overflow-hidden">
+
+    <!-- FONDO DEL TECLADO -->
+    <img src="{{ url_for('static', filename='img/teclado fondo.png') }}"
+         class="absolute inset-0 w-full h-full object-cover z-0" alt="Fondo Teclado">
+
+    <!-- CONTENEDOR DEL TELÉFONO -->
+    <div class="relative z-10 w-[400px] aspect-[9/19]">
+      <!-- MARCO DEL TELÉFONO -->
+      <img src="{{ url_for('static', filename='img/telefono fondo.png') }}"
+           class="absolute inset-0 w-full h-full z-20 pointer-events-none" alt="Marco teléfono">
+
+      <!-- CONTENIDO DENTRO DEL TELÉFONO -->
+      <div class="absolute inset-[7%] z-10 rounded-2xl overflow-hidden flex flex-col items-center justify-center px-6 py-8 bg-black/80 backdrop-blur-md">
+
+        <!-- FONDO DE LA CARTA BLOQUEADA -->
+        <img src="{{ url_for('static', filename='img/carta cadena fondo.png') }}"
+             class="absolute inset-0 w-full h-full object-cover blur-sm opacity-70" alt="Fondo carta">
+
+        <!-- FORMULARIO -->
+        <form method="POST" class="relative z-10 w-full flex flex-col items-center gap-4">
+          <!-- CADENAS -->
+          <img src="{{ url_for('static', filename='img/cadena fondo.png') }}"
+               class="absolute left-2 top-0 w-10 animate-chain-sway" alt="Cadena izquierda">
+          <img src="{{ url_for('static', filename='img/cadena fondo.png') }}"
+               class="absolute right-2 top-0 w-10 rotate-180 animate-chain-sway" alt="Cadena derecha">
+
+          <!-- INPUT -->
+          <input type="text" name="nombre" placeholder="Ingresa tu nombre"
+                 class="w-full text-center text-xl bg-yellow-900/80 text-white rounded-lg py-3 px-4 border-2 border-yellow-500 shadow-lg backdrop-blur-md font-semibold tracking-wide"
+                 required>
+          <button type="submit"
+                  class="bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded font-bold shadow-lg">
+            Entrar
+          </button>
+        </form>
+
+        {% if error %}
+          <p class="text-red-400 mt-4 z-10">{{ error }}</p>
+        {% endif %}
+      </div>
+    </div>
+
   </div>
 </body>
 </html>
