@@ -39,13 +39,14 @@
            class="w-1/2 p-2 rounded bg-gray-800 border border-gray-700 text-white transition-all"
            oninput="buscarCartaPorCode()" />
 
-    <!-- Botones vacíos para el futuro -->
-    <button class="p-2 px-3 rounded bg-gray-700 hover:bg-gray-600 text-sm">🔄</button>
+    <!-- Botón para reset -->
+    <button onclick="resetFiltro()"
+            class="p-2 px-3 rounded bg-gray-700 hover:bg-gray-600 text-sm">🔄</button>
     <button class="p-2 px-3 rounded bg-gray-700 hover:bg-gray-600 text-sm">⭐</button>
   </div>
 
   <!-- GALERIA DE CARTAS -->
-  <div id="galeria" class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
+  <div id="galeria" class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 p-4">
     {% for carta in cartas %}
     {% if carta.url_imagen %}
     <div class="carta-item relative bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform cursor-pointer"
@@ -133,11 +134,12 @@
       const cartas = document.querySelectorAll(".carta-item");
       let encontrada = false;
 
+      // Restaurar barra normal
+      input.classList.remove("error-input");
+      input.placeholder = "Buscar carta por número...";
+
       if (codigo === "") {
-        // Mostrar todas si no hay nada escrito
-        cartas.forEach(carta => carta.classList.remove("hidden"));
-        input.classList.remove("error-input");
-        input.placeholder = "Buscar carta por número...";
+        cartas.forEach(c => c.classList.remove("hidden"));
         return;
       }
 
@@ -155,10 +157,16 @@
         input.classList.add("error-input");
         input.value = "";
         input.placeholder = "❌ No tienes esta carta o está mal escrita";
-      } else {
-        input.classList.remove("error-input");
-        input.placeholder = "Buscar carta por número...";
       }
+    }
+
+    function resetFiltro() {
+      const input = document.getElementById("buscador");
+      const cartas = document.querySelectorAll(".carta-item");
+      cartas.forEach(c => c.classList.remove("hidden"));
+      input.classList.remove("error-input");
+      input.placeholder = "Buscar carta por número...";
+      input.value = "";
     }
   </script>
 </body>
