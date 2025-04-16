@@ -8,6 +8,12 @@
     .tab-activa {
       filter: brightness(1.1);
     }
+    .error-input {
+      background-color: #7f1d1d !important;
+      border-color: #ef4444 !important;
+      color: #fff !important;
+      font-style: italic;
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-white font-sans">
@@ -28,15 +34,22 @@
   </div>
 
   <!-- BUSCADOR -->
-  <div class="p-4">
-    <input id="buscador" type="text" placeholder="Buscar carta por número..." class="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white" oninput="autocompletar()">
+  <div class="p-4 flex items-center justify-center gap-2">
+    <input id="buscador" type="text" placeholder="Buscar carta por número..."
+           class="w-1/2 p-2 rounded bg-gray-800 border border-gray-700 text-white transition-all"
+           oninput="buscarCartaPorCode()" />
+
+    <!-- Botones vacíos para el futuro -->
+    <button class="p-2 px-3 rounded bg-gray-700 hover:bg-gray-600 text-sm">🔄</button>
+    <button class="p-2 px-3 rounded bg-gray-700 hover:bg-gray-600 text-sm">⭐</button>
   </div>
 
   <!-- GALERIA DE CARTAS -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
+  <div id="galeria" class="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
     {% for carta in cartas %}
     {% if carta.url_imagen %}
-    <div class="relative bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform cursor-pointer"
+    <div class="carta-item relative bg-gray-800 rounded-xl p-2 shadow hover:scale-105 transition-transform cursor-pointer"
+         data-code="{{ carta.code | lower }}"
          onclick="mostrarLeyenda('{{ carta.descripcion | e }}', '')">
 
       <!-- Código de la carta -->
@@ -80,7 +93,6 @@
 
         <div class="{{ color_bg }} {{ color_border }} {{ color_text }} text-sm font-semibold px-3 py-1 rounded-full border shadow text-center relative">
           {{ carta.tipo }}
-          <!-- Piquito hacia arriba -->
           <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-3 h-3 {{ color_bg }} {{ color_border }} border-b border-r rotate-45 z-0"></div>
         </div>
       </div>
@@ -111,12 +123,42 @@
       setTimeout(() => globo.classList.add('hidden'), 4000);
     }
 
-    function autocompletar() {
-      // Futuro: filtro en vivo con JS
-    }
-
     function cambiarTemporada(id) {
       alert("(Placeholder) Cambiar a temporada: " + id);
+    }
+
+    function buscarCartaPorCode() {
+      const input = document.getElementById("buscador");
+      const codigo = input.value.trim().toLowerCase();
+      const cartas = document.querySelectorAll(".carta-item");
+      let encontrada = false;
+
+      if (codigo === "") {
+        // Mostrar todas si no hay nada escrito
+        cartas.forEach(carta => carta.classList.remove("hidden"));
+        input.classList.remove("error-input");
+        input.placeholder = "Buscar carta por número...";
+        return;
+      }
+
+      cartas.forEach(carta => {
+        const code = carta.getAttribute("data-code");
+        if (code === codigo) {
+          carta.classList.remove("hidden");
+          encontrada = true;
+        } else {
+          carta.classList.add("hidden");
+        }
+      });
+
+      if (!encontrada) {
+        input.classList.add("error-input");
+        input.value = "";
+        input.placeholder = "❌ No tienes esta carta o está mal escrita";
+      } else {
+        input.classList.remove("error-input");
+        input.placeholder = "Buscar carta por número...";
+      }
     }
   </script>
 </body>
