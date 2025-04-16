@@ -44,12 +44,10 @@
         {{ carta.code }}
       </div>
 
-      <!-- Copias del usuario (si tiene más de una) -->
-      {% if carta.cantidad > 1 %}
+      <!-- Siempre mostrar contador de copias -->
       <div class="absolute top-4 left-[60%] bg-gray-300 text-gray-800 text-xs px-2 py-0.5 rounded-full shadow z-10">
         x{{ carta.cantidad }}
       </div>
-      {% endif %}
 
       <!-- Imagen de la carta -->
       <img src="{{ carta.url_imagen }}" alt="{{ carta.descripcion | e }}" class="w-full h-auto rounded mb-2">
