@@ -39,7 +39,7 @@
            class="w-1/2 p-2 rounded bg-gray-800 border border-gray-700 text-white transition-all"
            oninput="buscarCartaPorCode()" />
 
-    <!-- Botón para reset -->
+    <!-- Botones futuros -->
     <button onclick="resetFiltro()"
             class="p-2 px-3 rounded bg-gray-700 hover:bg-gray-600 text-sm">🔄</button>
     <button class="p-2 px-3 rounded bg-gray-700 hover:bg-gray-600 text-sm">⭐</button>
@@ -54,13 +54,15 @@
          onclick="mostrarLeyenda('{{ carta.descripcion | e }}', '')">
 
       <!-- Código de la carta -->
-      <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-200 text-black text-sm font-semibold px-3 py-1 rounded-full shadow z-10">
-        {{ carta.code }}
-      </div>
+      <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 z-10">
+        <div class="bg-blue-200 text-black text-sm font-semibold px-3 py-1 rounded-full shadow">
+          {{ carta.code }}
+        </div>
 
-      <!-- Siempre mostrar contador de copias -->
-      <div class="absolute top-4 left-[60%] bg-gray-300 text-gray-800 text-xs px-2 py-0.5 rounded-full shadow z-10">
-        x{{ carta.cantidad }}
+        <!-- Cantidad al lado derecho del código -->
+        <div class="bg-gray-300 text-gray-800 text-xs px-2 py-0.5 rounded-full shadow">
+          x{{ carta.cantidad }}
+        </div>
       </div>
 
       <!-- Imagen de la carta -->
@@ -134,7 +136,6 @@
       const cartas = document.querySelectorAll(".carta-item");
       let encontrada = false;
 
-      // Restaurar barra normal
       input.classList.remove("error-input");
       input.placeholder = "Buscar carta por número...";
 
@@ -155,7 +156,6 @@
 
       if (!encontrada) {
         input.classList.add("error-input");
-        input.value = "";
         input.placeholder = "❌ No tienes esta carta o está mal escrita";
       }
     }
