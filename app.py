@@ -15,37 +15,41 @@ TWITCH_BROADCASTER_ID = os.getenv("TWITCH_BROADCASTER_ID")
 def get_db():
     return psycopg2.connect(DATABASE_URL, cursor_factory=psycopg2.extras.RealDictCursor)
 
-# Función para obtener avatar y sub info desde Twitch
+# Función para obtener avatar y sub info desde Twitch (con protección de errores)
 def obtener_datos_twitch(nombre_usuario):
-    headers = {
-        "Client-ID": TWITCH_CLIENT_ID,
-        "Authorization": f"Bearer {TWITCH_TOKEN}"
-    }
+    try:
+        headers = {
+            "Client-ID": TWITCH_CLIENT_ID,
+            "Authorization": f"Bearer {TWITCH_TOKEN}"
+        }
 
-    r_user = requests.get(f"https://api.twitch.tv/helix/users?login={nombre_usuario}", headers=headers)
-    datos_user = r_user.json().get("data", [])
-    if not datos_user:
-        return None, "Usuario no encontrado", None, ""
+        r_user = requests.get(f"https://api.twitch.tv/helix/users?login={nombre_usuario}", headers=headers)
+        datos_user = r_user.json().get("data", [])
+        if not datos_user:
+            return None, "Usuario no encontrado", None, ""
 
-    twitch_user = datos_user[0]
-    user_id = twitch_user["id"]
-    avatar_url = twitch_user["profile_image_url"]
+        twitch_user = datos_user[0]
+        user_id = twitch_user["id"]
+        avatar_url = twitch_user["profile_image_url"]
 
-    r_sub = requests.get(
-        f"https://api.twitch.tv/helix/subscriptions/user?broadcaster_id={TWITCH_BROADCASTER_ID}&user_id={user_id}",
-        headers=headers
-    )
-    if r_sub.status_code == 200 and r_sub.json().get("data"):
-        sub_info = r_sub.json()["data"][0]
-        sub_status = "Suscriptor"
-        sub_level = sub_info.get("tier")
-    else:
-        sub_status = "No sub"
-        sub_level = None
+        r_sub = requests.get(
+            f"https://api.twitch.tv/helix/subscriptions/user?broadcaster_id={TWITCH_BROADCASTER_ID}&user_id={user_id}",
+            headers=headers
+        )
+        if r_sub.status_code == 200 and r_sub.json().get("data"):
+            sub_info = r_sub.json()["data"][0]
+            sub_status = "Suscriptor"
+            sub_level = sub_info.get("tier")
+        else:
+            sub_status = "No sub"
+            sub_level = None
 
-    logro_activo = ""  # Podés consultar en tu base si tenés uno activo
+        logro_activo = ""  # Podés consultar en tu base si tenés uno activo
 
-    return avatar_url, sub_status, sub_level, logro_activo
+        return avatar_url, sub_status, sub_level, logro_activo
+    except Exception as e:
+        print(f"❌ Error en obtener_datos_twitch: {e}")
+        return None, "Error Twitch", None, ""
 
 # Página de entrada con selección automática móvil o PC
 @app.route("/", methods=["GET", "POST"])
@@ -82,60 +86,67 @@ def entrada():
 # Página Pokédex visual
 @app.route("/pokedex")
 def pokedex():
-    usuario = request.args.get("usuario", "").strip().lower()
-    if not usuario:
-        return redirect(url_for("entrada"))
+    try:
+        usuario = request.args.get("usuario", "").strip().lower()
+        if not usuario:
+            return redirect(url_for("entrada"))
 
-    with get_db() as conn:
-        with conn.cursor() as cur:
-            cur.execute("""
-                SELECT cards.id,
-                       cards.code,
-                       cards.edition,
-                       cards.tipo,
-                       cards.url_imagen,
-                       cards.descripcion,
-                       cards.habilidad,
-                       cards.evento_especial,
-                       cards.version_especial,
-                       cards.primera_vez,
-                       cards.tier,
-                       cards.nombre,
-                       cards.temporada,
-                       cards.sammi_boost_id,
-                       cards.descripcion AS leyenda,
-                       COUNT(*) as cantidad
-                FROM user_cards
-                JOIN cards ON cards.id = user_cards.card_id
-                WHERE twitch_user = %s AND cards.code != 'fragmento'
-                GROUP BY cards.id, cards.code, cards.edition, cards.tipo, cards.url_imagen,
-                         cards.descripcion, cards.habilidad, cards.evento_especial,
-                         cards.version_especial, cards.primera_vez, cards.tier,
-                         cards.nombre, cards.temporada, cards.sammi_boost_id
-            """, (usuario,))
-            cartas_final = cur.fetchall()
+        print(f"📥 Consultando pokedex de: {usuario}")
 
-            total_cartas = len(cartas_final)
+        with get_db() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT cards.id,
+                           cards.code,
+                           cards.edition,
+                           cards.tipo,
+                           cards.url_imagen,
+                           cards.descripcion,
+                           cards.habilidad,
+                           cards.evento_especial,
+                           cards.version_especial,
+                           cards.primera_vez,
+                           cards.tier,
+                           cards.nombre,
+                           cards.temporada,
+                           cards.sammi_boost_id,
+                           cards.descripcion AS leyenda,
+                           COUNT(*) as cantidad
+                    FROM user_cards
+                    JOIN cards ON cards.id = user_cards.card_id
+                    WHERE twitch_user = %s AND cards.code != 'fragmento'
+                    GROUP BY cards.id, cards.code, cards.edition, cards.tipo, cards.url_imagen,
+                             cards.descripcion, cards.habilidad, cards.evento_especial,
+                             cards.version_especial, cards.primera_vez, cards.tier,
+                             cards.nombre, cards.temporada, cards.sammi_boost_id
+                """, (usuario,))
+                cartas_final = cur.fetchall()
 
-            cur.execute("""
-                SELECT COUNT(*) FROM user_cards
-                JOIN cards ON cards.id = user_cards.card_id
-                WHERE twitch_user = %s AND cards.code = 'fragmento';
-            """, (usuario,))
-            fragmentos = cur.fetchone()["count"]
+                total_cartas = len(cartas_final)
 
-    avatar_url, sub_status, sub_level, logro_activo = obtener_datos_twitch(usuario)
+                cur.execute("""
+                    SELECT COUNT(*) FROM user_cards
+                    JOIN cards ON cards.id = user_cards.card_id
+                    WHERE twitch_user = %s AND cards.code = 'fragmento';
+                """, (usuario,))
+                row = cur.fetchone()
+                fragmentos = row["count"] if row else 0
 
-    return render_template("pokedex.html",
-        usuario=usuario,
-        cartas=cartas_final,
-        total_cartas=total_cartas,
-        fragmentos=fragmentos,
-        user_avatar_url=avatar_url,
-        sub_status=sub_status,
-        sub_level=sub_level,
-        logro_activo=logro_activo
-    )
+        avatar_url, sub_status, sub_level, logro_activo = obtener_datos_twitch(usuario)
+
+        return render_template("pokedex.html",
+            usuario=usuario,
+            cartas=cartas_final,
+            total_cartas=total_cartas,
+            fragmentos=fragmentos,
+            user_avatar_url=avatar_url,
+            sub_status=sub_status,
+            sub_level=sub_level,
+            logro_activo=logro_activo
+        )
+    except Exception as e:
+        print(f"❌ ERROR EN /pokedex: {e}")
+        return "Error interno en la Pokédex", 500
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
